@@ -1,0 +1,56 @@
+version: '3.9'
+
+networks:
+  assignments:
+    driver: bridge
+
+services:
+  json-server:
+    build: ./json-server
+    restart: unless-stopped
+    networks:
+      - assignments
+    ports:
+      - "3036:3000"
+    volumes:
+      - ./json-server/db.json:/app/db.json
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.json-server.rule=Host(`localhost`)"
+      - "traefik.http.services.json-server.loadbalancer.server.port=3000"
+      - "traefik.http.middlewares.secure-headers.headers.stsSeconds=31536000"
+      - "traefik.http.middlewares.secure-headers.headers.stsIncludeSubdomains=true"
+      - "traefik.http.middlewares.secure-headers.headers.stsPreload=true"
+      - "traefik.http.middlewares.secure-headers.headers.forceSTSHeader=true"
+      - "traefik.http.middlewares.secure-headers.headers.browserXSSFilter=true"
+      - "traefik.http.middlewares.secure-headers.headers.contentTypeNosniff=true"
+      - "traefik.http.middlewares.secure-headers.headers.frameDeny=true"
+      - "traefik.http.middlewares.secure-headers.headers.referrerPolicy=same-origin"
+      - "traefik.http.middlewares.secure-headers.headers.featurePolicy=accelerometer 'none'; camera 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; payment 'none'; usb 'none'"
+
+  traefik:
+    image: traefik:v2.3
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.websecure.http.tls=true"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    networks:
+      - assignments
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    labels:
+      - "traefik.http.middlewares.secure-headers.headers.frameDeny=true"
+      - "traefik.http.middlewares.secure-headers.headers.contentTypeNosniff=true"
+      - "traefik.http.middlewares.secure-headers.headers.browserXSSFilter=true"
+      - "traefik.http.middlewares.secure-headers.headers.forceSTSHeader=true"
+      - "traefik.http.middlewares.secure-headers.headers.stsSeconds=31536000"
+      - "traefik.http.middlewares.secure-headers.headers.stsIncludeSubdomains=true"
+      - "traefik.http.middlewares.secure-headers.headers.stsPreload=true"
+      - "traefik.http.middlewares.secure-headers.headers.referrerPolicy=same-origin"
+      - "traefik.http.middlewares.secure-headers.headers.featurePolicy=accelerometer 'none'; camera 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; payment 'none'; usb 'none'"

@@ -1,0 +1,122 @@
+{
+  "projects": [
+    {
+      "name": "Green project",
+      "acronym": "Green",
+      "description": "Green project plants trees in forests",
+      "id": 1
+    },
+    {
+      "name": "Red project",
+      "acronym": "RED",
+      "description": "RED project gathers fish",
+      "id": 2
+    },
+    {
+      "name": "Blue project",
+      "acronym": "BLUE",
+      "description": "BLUE project protects the sea from waste",
+      "id": 4
+    },
+    {
+      "name": "New Blue project",
+      "acronym": "BLUE2",
+      "description": "BLUE project protects the sea from waste",
+      "id": 5
+    },
+    {
+      "name": "Yellow project",
+      "acronym": "YELLOW",
+      "description": "Yellow project protects the sea",
+      "id": 6
+    },
+    {
+      "name": "<string>",
+      "acronym": "<string>",
+      "description": "<string>",
+      "id": 7
+    },
+    {
+      "name": "Yellow project",
+      "acronym": "<string>",
+      "description": "<string>",
+      "id": 8
+    }
+  ],
+  "organizations": [
+    {
+      "name": "BUILD company",
+      "acronym": "BUILD",
+      "country": "Slovenia",
+      "id": 1
+    },
+    {
+      "name": "GARDEN company",
+      "acronym": "GRD",
+      "country": "Spain",
+      "id": 3
+    },
+    {
+      "name": "ROAST company",
+      "acronym": "RST",
+      "country": "Latvia",
+      "projectId": "",
+      "id": 4
+    },
+    {
+      "name": "MegaSoft company",
+      "acronym": "MGST",
+      "country": "USA",
+      "id": 5
+    },
+    {
+      "name": "Megasoft company",
+      "acronym": "MGST",
+      "country": "Brazil",
+      "projectId": 1,
+      "id": 6
+    },
+    {
+      "name": "Megasoft company",
+      "acronym": "MGST",
+      "country": "Brazil",
+      "projectId": null,
+      "id": 7
+    },
+    {
+      "name": "<string>",
+      "acronym": "<string>",
+      "country": "<string>",
+      "projectId": "9",
+      "id": 8
+    },
+    {
+      "name": "Megasoft company",
+      "acronym": "MGST",
+      "country": "Brazil",
+      "projectId": 9,
+      "id": 9
+    },
+    {
+      "name": "<string>",
+      "acronym": "<string>",
+      "country": "<string>",
+      "projectId": "9",
+      "id": 10
+    }
+  ],
+  "users": [
+    {
+      "name": "Brian Hughes",
+      "email": "bhughes@mail.com",
+      "organizationId": 4,
+      "id": 2
+    },
+    {
+      "name": "<string>",
+      "email": "<string>",
+      "organizationId": "<string>",
+      "id": 3
+    }
+  ]
+}
