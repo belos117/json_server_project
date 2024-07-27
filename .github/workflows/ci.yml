@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+      AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SSH_PUBLIC_KEY: ${{ secrets.SSH_PUBLIC_KEY }}
+      TERRAFORM_STATE_TOKEN: ${{ secrets.TERRAFORM_STATE_TOKEN }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Log in to Harbor
+      run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login registry-1.docker.io -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+
+    - name: Build and push Docker image
+      run: |
+        docker build --pull --rm -f "json-server/Dockerfile" -t stormhenkel/json-server:latest ./
+        docker push stormhenkel/json-server:latest
+
+    - name: Install Terraform
+      uses: hashicorp/setup-terraform@v1
+
+    - name: Install jq
+      run: sudo apt-get install -y jq
+    
+    - name: Initialize Terraform
+      run: terraform init
+      working-directory: ./deployment/app-server
+
+    - name: Initialize Validate
+      run: terraform validate
+      working-directory: ./deployment/app-server
+
+    - name: Apply Terraform
+      id: apply
+      env:
+        HC_TOKEN: ${{ secrets.HC_TOKEN }}
+      run: terraform apply -auto-approve -var="HC_TOKEN=${{ secrets.HC_TOKEN }}"
+      working-directory: ./deployment/app-server
+
+    - name: Parse Terraform output
+      id: parse_output
+      run: |
+        IP=$(terraform output -json | jq -r '.server_ip.value')
+        echo "Server IP: $IP"
+        echo "::set-output name=HETZNER_IP::$IP"
+      working-directory: ./deployment/app-server
+
+    - name: Add Hetzner IP to GitHub Secrets
+      run: |
+        echo $HETZNER_IP > /tmp/hetzner_ip.txt
+      env:
+        HETZNER_IP: ${{ steps.parse_output.outputs.HETZNER_IP }}
