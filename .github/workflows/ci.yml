@@ -49,13 +49,11 @@ jobs:
         aws-access-key-id: '${{ secrets.AWS_ACCESS_KEY }}'
         aws-secret-access-key: '${{ secrets.AWS_SECRET_KEY }}'
         aws-region: us-east-1
-
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
       with: 
         terraform_wrapper: false
         cli_config_credentials_token: ${{ secrets.TERRAFORM_STATE_TOKEN }}
-
     - name: Terraform Apply
       id:   apply
       run: |
@@ -64,12 +62,6 @@ jobs:
         terraform validate
         terraform plan 
         terraform apply -auto-approve
-
-    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v1
-      with:
-        cli_config_credentials_token: ${{ secrets.TERRAFORM_STATE_TOKEN }}
 
     - name: Parse Terraform output
       id: parse_output
