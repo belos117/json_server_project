@@ -22,16 +22,20 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+    
 
-    - name: Log in to Docker Hub
-      run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login registry-1.docker.io -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+    - name: login to docker registry
+      uses: docker/login-action@v3
+      with:
+        username: ${{secrets.DOCKER_USERNAME}}
+        password: ${{secrets.DOCKER_PASSWORD}}
 
-    - name: Build and push Docker image
-      run: |
-        docker build --pull --rm -f "json-server/Dockerfile" -t stormhenkel/json-server:latest ./
-        docker push stormhenkel/json-server:latest
+    - name: build and push docker image to registry
+      uses: docker/build-push-action@v5
+      with:
+        context: json-server/
+        push: true
+        tags: stormhenkel/json-server:lts
 
     - name: Install Terraform
       uses: hashicorp/setup-terraform@v1
