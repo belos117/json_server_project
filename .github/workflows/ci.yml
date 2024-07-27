@@ -66,7 +66,7 @@ jobs:
     - name: Parse Terraform output
       id: parse_output
       run: |
-        IP=$(terraform output -json | jq -r '.server_ip.value')
+        IP=$(terraform output -json | jq -r '.instance_public_ip.value')
         echo "Server IP: $IP"
         echo "::set-output name=HOST_IP::$IP"
       working-directory: ./app-server
