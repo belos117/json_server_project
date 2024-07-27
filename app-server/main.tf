@@ -39,7 +39,7 @@ resource "aws_instance" "app-server-instance" {
   ami           = var.ami_image
   instance_type = var.ami_image
   key_name      = aws_key_pair.deployer.key_name
-  vpc_security_group_ids = [aws_security_group.app-server_instance.id]
+  vpc_security_group_ids = [aws_security_group.json-server-security-group]
 
   tags = {
     Name = "App Server Instance"
