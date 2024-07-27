@@ -1,5 +1,5 @@
 resource "aws_vpc" "main" {
-  cidr_block = "0.0.0.0/16"
+  cidr_block = "0.0.0.0/0"
 }
 
 resource "aws_instance" "server_instance" {
@@ -13,7 +13,7 @@ resource "aws_instance" "server_instance" {
 
 resource "aws_key_pair" "deployer" {
   key_name   = "deployer"
-  public_key = "{{secrets.SSH_PUBLIC_KEY}}"
+  public_key = "${{secrets.SSH_PUBLIC_KEY}}"
 }
 
 resource "aws_security_group" "allow_tls" {
