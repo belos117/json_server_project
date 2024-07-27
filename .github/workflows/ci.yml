@@ -25,7 +25,7 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
 
-    - name: Log in to Harbor
+    - name: Log in to Docker Hub
       run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login registry-1.docker.io -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
     - name: Build and push Docker image
@@ -41,29 +41,27 @@ jobs:
     
     - name: Initialize Terraform
       run: terraform init
-      working-directory: ./deployment/app-server
+      working-directory: ./app-server
 
     - name: Initialize Validate
       run: terraform validate
-      working-directory: ./deployment/app-server
+      working-directory: ./app-server
 
     - name: Apply Terraform
       id: apply
-      env:
-        HC_TOKEN: ${{ secrets.HC_TOKEN }}
-      run: terraform apply -auto-approve -var="HC_TOKEN=${{ secrets.HC_TOKEN }}"
-      working-directory: ./deployment/app-server
+      run: terraform apply -auto-approve 
+      working-directory: ./app-server
 
     - name: Parse Terraform output
       id: parse_output
       run: |
         IP=$(terraform output -json | jq -r '.server_ip.value')
         echo "Server IP: $IP"
-        echo "::set-output name=HETZNER_IP::$IP"
-      working-directory: ./deployment/app-server
+        echo "::set-output name=HOST_IP::$IP"
+      working-directory: ./app-server
 
-    - name: Add Hetzner IP to GitHub Secrets
+    - name: Add HOST IP to GitHub Secrets
       run: |
-        echo $HETZNER_IP > /tmp/hetzner_ip.txt
+        echo $HOST_IP > /tmp/host_ip.txt
       env:
-        HETZNER_IP: ${{ steps.parse_output.outputs.HETZNER_IP }}
+        HOST_IP: ${{ steps.parse_output.outputs.HOST_IP }}
