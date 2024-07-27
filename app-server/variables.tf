@@ -1,7 +1,7 @@
 variable "ami_image" {
   description = "AWS ami image"
   type        = string
-  default     = "ami-04a81a99f5ec58529"
+  default     = "ami-07c1b39b7b3d2525d"
 }
 
 variable "instance_type" {
